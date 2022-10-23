@@ -33,7 +33,7 @@ class Hangman
   def process_input(input)
     if previous_guesses.include?(input.colorize(:light_red)) ||
        previous_guesses.include?(input.colorize(:light_green))
-      puts 'You already guessed that letter!'.colorize(:light_yellow)
+      puts 'You have already guessed that letter!'.colorize(:light_yellow)
       prompt_player
     elsif @secret_word.include?("#{input}")
       process_correct_guess(input)
@@ -44,6 +44,12 @@ class Hangman
 
   def process_correct_guess(input)
     previous_guesses << input.colorize(:light_green)
+    secret_word.split('').each_with_index do |letter, index|
+      if letter == input
+        user_guess[index] = input
+      end
+    end
+    end_game unless user_guess.include?('_')
     prompt_player
   end
 
@@ -63,6 +69,16 @@ class Hangman
     process_input(user_input)
   end
 
+  def play_again_prompt
+    puts 'Would you like to play again? [y/n]'
+    player_response = gets.chomp.downcase
+    if player_response == 'y'
+      Hangman.new.play
+    else
+      exit
+    end
+  end
+
   def start_game
     choose_word
     prompt_player
@@ -76,13 +92,7 @@ class Hangman
       puts 'Congratulations, you guessed the word!'.colorize(:light_green)
       p @secret_word
     end
-    puts 'Would you like to play again? [y/n]'
-    player_response = gets.chomp.downcase
-    if player_response == 'y'
-      Hangman.new.play
-    else
-      exit
-    end
+    play_again_prompt
   end
 
   def play
