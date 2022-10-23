@@ -8,6 +8,7 @@ class Hangman
 
   def initialize
     @incorrect_guesses = 0
+    @lives = 6
     @user_guess = []
     @previous_guesses = []
   end
@@ -60,11 +61,11 @@ class Hangman
   end
 
   def prompt_player
-    end_game if @incorrect_guesses == 10
+    end_game if @incorrect_guesses == @lives
 
     puts "Previous guesses: #{@previous_guesses.join(' ')}" if @previous_guesses.empty? == false
-    puts "Incorrect guesses remaining: #{10 - @incorrect_guesses}"
-    puts user_guess.join
+    puts "Incorrect guesses remaining: #{@lives - @incorrect_guesses}"
+    puts user_guess.join(' ')
     user_input = player_input
     process_input(user_input)
   end
@@ -85,7 +86,7 @@ class Hangman
   end
 
   def end_game
-    if @incorrect_guesses == 10
+    if @incorrect_guesses == @lives
       puts 'Better luck next time!'
       puts "The word was: #{secret_word}"
     else
