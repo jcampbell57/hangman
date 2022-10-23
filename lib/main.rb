@@ -2,4 +2,4 @@
 
 require_relative 'game'
 
-Hangman.new.play
+current_game = Hangman.new.play

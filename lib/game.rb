@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# require_relative 'save'
+
 # Hangman logic
 class Hangman
   attr_accessor :secret_word, :user_guess, :previous_guesses
@@ -22,7 +24,7 @@ class Hangman
   end
 
   def player_input
-    puts 'Guess a letter:'
+    print 'Guess a letter: '
     user_input = gets.chomp.downcase
     return user_input if user_input.match?(/^[a-z]{1}$/)
 
@@ -44,6 +46,7 @@ class Hangman
   end
 
   def process_correct_guess(input)
+    puts 'Good guess!'.colorize(:green)
     previous_guesses << input.colorize(:light_green)
     secret_word.split('').each_with_index do |letter, index|
       if letter == input
@@ -55,6 +58,7 @@ class Hangman
   end
 
   def process_incorrect_guess(input)
+    puts 'No luck!'.colorize(:light_red)
     @incorrect_guesses += 1
     previous_guesses << input.colorize(:light_red)
     prompt_player
@@ -71,7 +75,7 @@ class Hangman
   end
 
   def play_again_prompt
-    puts 'Would you like to play again? [y/n]'
+    print 'Would you like to play again? [y/n]: '
     player_response = gets.chomp.downcase
     if player_response == 'y'
       Hangman.new.play
@@ -87,7 +91,7 @@ class Hangman
 
   def end_game
     if @incorrect_guesses == @lives
-      puts 'Better luck next time!'
+      puts 'Better luck next time!'.colorize(:light_red)
       puts "The word was: #{secret_word}"
     else
       puts 'Congratulations, you guessed the word!'.colorize(:light_green)
