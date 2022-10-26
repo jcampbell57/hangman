@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
-# require_relative 'save'
+require 'colorize'
 
 # Hangman logic
-class Hangman
+class Game
   attr_accessor :secret_word, :user_guess, :previous_guesses
-
-  require 'colorize'
 
   def initialize
     @incorrect_guesses = 0
@@ -19,14 +17,15 @@ class Hangman
     word_bank = File.readlines('google-10000-english-no-swears.txt') if File.exist? 'google-10000-english-no-swears.txt'
     word_bank.delete_if { |word| word.chomp.length < 5 || word.chomp.length > 12 }
     @secret_word = word_bank.sample.chomp
-    @secret_word.length.times { @user_guess << '_'}
+    @secret_word.length.times { @user_guess << '_' }
     puts "a random word with #{@secret_word.length} letters has been chosen."
   end
 
   def player_input
-    print 'Guess a letter: '
+    print "Guess a letter or input 'save' to save the game: "
     user_input = gets.chomp.downcase
-    return user_input if user_input.match?(/^[a-z]{1}$/)
+    return user_input if user_input.match?(/^[a-z]{1}$/) # || user_input == 'save'
+    return 'save' if user_input == 'save'
 
     # when user guess is invalid:
     puts 'Invalid input!'.colorize(:light_yellow)
@@ -38,6 +37,8 @@ class Hangman
        previous_guesses.include?(input.colorize(:light_green))
       puts 'You have already guessed that letter!'.colorize(:light_yellow)
       prompt_player
+    elsif input == 'save'
+      # returns to main.rb to save
     elsif @secret_word.include?("#{input}")
       process_correct_guess(input)
     else
@@ -65,7 +66,7 @@ class Hangman
   end
 
   def prompt_player
-    end_game if @incorrect_guesses == @lives
+    end_game if @incorrect_guesses == @lives || user_guess.join == secret_word
 
     puts "Previous guesses: #{@previous_guesses.join(' ')}" if @previous_guesses.empty? == false
     puts "Incorrect guesses remaining: #{@lives - @incorrect_guesses}"
@@ -74,17 +75,18 @@ class Hangman
     process_input(user_input)
   end
 
+  # this is buggy when going to save game during another round
   def play_again_prompt
     print 'Would you like to play again? [y/n]: '
     player_response = gets.chomp.downcase
     if player_response == 'y'
-      Hangman.new.play
+      Game.new.play
     else
       exit
     end
   end
 
-  def start_game
+  def play
     choose_word
     prompt_player
   end
@@ -98,10 +100,5 @@ class Hangman
       p @secret_word
     end
     play_again_prompt
-  end
-
-  def play
-    start_game
-    end_game
   end
 end
