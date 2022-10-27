@@ -31,16 +31,44 @@ end
 def save_game(current_game)
   filename = filename_prompt
   Dir.mkdir 'saves' unless Dir.exist? 'saves'
-  File.open("saves/#{filename}", 'w') { |file| file.write YAML.dump(current_game) }
+  File.open("saves/#{filename}.yaml", 'w') { |file| file.write YAML.dump(current_game) }
   puts "Your game, '#{filename}', has been saved."
 end
 
+def choose_game
+  saved_games = Dir.glob('saves/*')
+  Dir.glob('saves/*').each_with_index do |file, index|
+    puts "#{index + 1}. #{file[(file.index('/') + 1)...(file.index('.'))]}"
+  end
+  print 'Input the number of a game from above: '
+  selection = gets.chomp
+
+  unless selection.to_i.to_s == selection
+    puts 'Invalid selection, please input a number.'.colorize(:light_yellow)
+    choose_game
+  end
+
+  return saved_games[selection.to_i - 1] unless saved_games[selection.to_i - 1].nil?
+
+  # if selection is invalid:
+  puts 'Invalid selection'.colorize(:light_yellow)
+  choose_game
+end
+
 def load_game
-  puts 'load game here (main.rb)'
+  user_selection = choose_game
+  YAML.safe_load(
+    File.read(user_selection),
+    permitted_classes: [Game]
+  )
 end
 
 # cannot use Game.new.play and still be able to save, must be seperate
-current_game = player_choice == '1' ? Game.new : load_game
+current_game = if Dir.glob('saves/*').empty?
+                 Game.new
+               else
+                 player_choice == '1' ? Game.new : load_game
+               end
 current_game.play
 
 save_game(current_game)

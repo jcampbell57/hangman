@@ -1,0 +1,21 @@
+--- !ruby/object:Game
+incorrect_guesses: 5
+lives: 6
+user_guess:
+- s
+- _
+- i
+- _
+- _
+- i
+- _
+- _
+previous_guesses:
+- "\e[0;91;49ma\e[0m"
+- "\e[0;91;49me\e[0m"
+- "\e[0;92;49mi\e[0m"
+- "\e[0;91;49mo\e[0m"
+- "\e[0;91;49mu\e[0m"
+- "\e[0;91;49mr\e[0m"
+- "\e[0;92;49ms\e[0m"
+secret_word: shipping

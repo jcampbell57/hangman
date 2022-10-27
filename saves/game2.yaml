@@ -1,0 +1,26 @@
+--- !ruby/object:Game
+incorrect_guesses: 5
+lives: 6
+user_guess:
+- _
+- _
+- _
+- l
+- a
+- _
+- e
+- l
+- _
+- _
+- _
+- a
+previous_guesses:
+- "\e[0;92;49ma\e[0m"
+- "\e[0;92;49me\e[0m"
+- "\e[0;91;49mo\e[0m"
+- "\e[0;91;49mu\e[0m"
+- "\e[0;91;49ms\e[0m"
+- "\e[0;91;49mr\e[0m"
+- "\e[0;91;49mc\e[0m"
+- "\e[0;92;49ml\e[0m"
+secret_word: philadelphia
