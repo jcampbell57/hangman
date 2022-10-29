@@ -29,6 +29,7 @@ def filename_prompt
 end
 
 def save_game(current_game)
+  current_game.save = false
   filename = filename_prompt
   Dir.mkdir 'saves' unless Dir.exist? 'saves'
   File.open("saves/#{filename}.yaml", 'w') { |file| file.write YAML.dump(current_game) }
@@ -71,4 +72,13 @@ current_game = if Dir.glob('saves/*').empty?
                end
 current_game.play
 
-save_game(current_game)
+# below code only works the first time the game exits to main
+until current_game.over == true
+  if current_game.save == true
+    save_game(current_game)
+    exit
+  else
+    current_game = Game.new
+    current_game.play
+  end
+end

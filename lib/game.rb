@@ -4,13 +4,15 @@ require 'colorize'
 
 # Hangman logic
 class Game
-  attr_accessor :secret_word, :user_guess, :previous_guesses
+  attr_accessor :secret_word, :user_guess, :previous_guesses, :save, :over
 
   def initialize
     @incorrect_guesses = 0
     @lives = 6
     @user_guess = []
     @previous_guesses = []
+    @save = false
+    @over = false
   end
 
   def choose_word
@@ -38,11 +40,20 @@ class Game
       puts 'You have already guessed that letter!'.colorize(:light_yellow)
       prompt_player
     elsif input == 'save'
-      # returns to main.rb to save
+      @save = true
     elsif @secret_word.include?("#{input}")
       process_correct_guess(input)
     else
       process_incorrect_guess(input)
+    end
+
+    if @incorrect_guesses == @lives || user_guess.join == secret_word
+      puts 'end 1'
+      end_game
+    elsif save == true
+      # return to main.rb to save
+    else
+      prompt_player
     end
   end
 
@@ -54,18 +65,20 @@ class Game
         user_guess[index] = input
       end
     end
-    end_game unless user_guess.include?('_')
-    prompt_player
+    # end_game unless user_guess.include?('_')
+    # do not prompt if playing again
+    # prompt_player unless @incorrect_guesses == @lives || user_guess.join == secret_word
   end
 
   def process_incorrect_guess(input)
     puts 'No luck!'.colorize(:light_red)
     @incorrect_guesses += 1
     previous_guesses << input.colorize(:light_red)
-    prompt_player
+    # prompt_player
   end
 
   def prompt_player
+    puts 'end 2'
     end_game if @incorrect_guesses == @lives || user_guess.join == secret_word
 
     puts "Previous guesses: #{@previous_guesses.join(' ')}" if @previous_guesses.empty? == false
@@ -80,8 +93,11 @@ class Game
     print 'Would you like to play again? [y/n]: '
     player_response = gets.chomp.downcase
     if player_response == 'y'
-      Game.new.play
+      # return to main.rb to start new game.
     else
+      # exit
+      puts 'Thanks for playing!'
+      # @over = true
       exit
     end
   end
