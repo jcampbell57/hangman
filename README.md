@@ -8,6 +8,5 @@ This project will allow me to:
 The biggest challenge of this project was implementing the save feature.
 
 Bugs:
-- saved games not loading properly
-- if playing loaded game, end_game prompts twice
+- if playing loaded game, end_game prompts more than once after losing
 - may need to convert colorize dependancy to code for repl?

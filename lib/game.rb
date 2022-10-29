@@ -13,6 +13,7 @@ class Game
     @previous_guesses = []
     @save = false
     @over = false
+    @secret_word = choose_word
   end
 
   def choose_word
@@ -21,6 +22,7 @@ class Game
     @secret_word = word_bank.sample.chomp
     @secret_word.length.times { @user_guess << '_' }
     puts "a random word with #{@secret_word.length} letters has been chosen."
+    @secret_word
   end
 
   def player_input
@@ -103,7 +105,7 @@ class Game
   end
 
   def play
-    choose_word
+    # choose_word
     prompt_player
   end
 
