@@ -1,0 +1,18 @@
+--- !ruby/object:Game
+incorrect_guesses: 4
+lives: 6
+user_guess:
+- _
+- o
+- _
+- _
+- _
+previous_guesses:
+- "\e[0;91;49ma\e[0m"
+- "\e[0;91;49mr\e[0m"
+- "\e[0;91;49me\e[0m"
+- "\e[0;91;49mi\e[0m"
+- "\e[0;92;49mo\e[0m"
+save: false
+over: false
+secret_word: sound

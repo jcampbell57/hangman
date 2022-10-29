@@ -72,7 +72,6 @@ current_game = if Dir.glob('saves/*').empty?
                end
 current_game.play
 
-# below code only works the first time the game exits to main
 until current_game.over == true
   if current_game.save == true
     save_game(current_game)

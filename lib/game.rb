@@ -40,7 +40,6 @@ class Game
     if previous_guesses.include?(input.colorize(:light_red)) ||
        previous_guesses.include?(input.colorize(:light_green))
       puts 'You have already guessed that letter!'.colorize(:light_yellow)
-      prompt_player
     elsif input == 'save'
       @save = true
     elsif @secret_word.include?("#{input}")
@@ -50,7 +49,6 @@ class Game
     end
 
     if @incorrect_guesses == @lives || user_guess.join == secret_word
-      puts 'end 1'
       end_game
     elsif save == true
       # return to main.rb to save
@@ -68,19 +66,15 @@ class Game
       end
     end
     # end_game unless user_guess.include?('_')
-    # do not prompt if playing again
-    # prompt_player unless @incorrect_guesses == @lives || user_guess.join == secret_word
   end
 
   def process_incorrect_guess(input)
     puts 'No luck!'.colorize(:light_red)
     @incorrect_guesses += 1
     previous_guesses << input.colorize(:light_red)
-    # prompt_player
   end
 
   def prompt_player
-    puts 'end 2'
     end_game if @incorrect_guesses == @lives || user_guess.join == secret_word
 
     puts "Previous guesses: #{@previous_guesses.join(' ')}" if @previous_guesses.empty? == false
@@ -90,22 +84,18 @@ class Game
     process_input(user_input)
   end
 
-  # this is buggy when going to save game during another round
   def play_again_prompt
     print 'Would you like to play again? [y/n]: '
     player_response = gets.chomp.downcase
     if player_response == 'y'
       # return to main.rb to start new game.
     else
-      # exit
       puts 'Thanks for playing!'
-      # @over = true
       exit
     end
   end
 
   def play
-    # choose_word
     prompt_player
   end
 

@@ -2,9 +2,4 @@
 
 require_relative 'game'
 
-# hangman class
-class Hangman
-  def initialize
-    @game = Game.new
-  end
-end
+# move code from main.rb to here?
