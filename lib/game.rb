@@ -36,6 +36,16 @@ class Game
     player_input
   end
 
+  def next_action
+    if @incorrect_guesses == @lives || user_guess.join == secret_word
+      end_game
+    elsif save == true
+      # return to main.rb to save
+    else
+      prompt_player
+    end
+  end
+
   def process_input(input)
     if previous_guesses.include?(input.bold.red) ||
        previous_guesses.include?(input.bold.green)
@@ -48,13 +58,7 @@ class Game
       process_incorrect_guess(input)
     end
 
-    if @incorrect_guesses == @lives || user_guess.join == secret_word
-      end_game
-    elsif save == true
-      # return to main.rb to save
-    else
-      prompt_player
-    end
+    next_action
   end
 
   def process_correct_guess(input)
