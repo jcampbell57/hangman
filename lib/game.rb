@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'colorize'
+require_relative 'colors'
 
 # Hangman logic
 class Game
@@ -32,14 +32,14 @@ class Game
     return 'save' if user_input == 'save'
 
     # when user guess is invalid:
-    puts 'Invalid input!'.colorize(:light_yellow)
+    puts 'Invalid input!'.bold.brown
     player_input
   end
 
   def process_input(input)
-    if previous_guesses.include?(input.colorize(:light_red)) ||
-       previous_guesses.include?(input.colorize(:light_green))
-      puts 'You have already guessed that letter!'.colorize(:light_yellow)
+    if previous_guesses.include?(input.bold.red) ||
+       previous_guesses.include?(input.bold.green)
+      puts 'You have already guessed that letter!'.bold.brown
     elsif input == 'save'
       @save = true
     elsif @secret_word.include?("#{input}")
@@ -58,8 +58,8 @@ class Game
   end
 
   def process_correct_guess(input)
-    puts 'Good guess!'.colorize(:green)
-    previous_guesses << input.colorize(:light_green)
+    puts 'Good guess!'.bold.green
+    previous_guesses << input.bold.green
     secret_word.split('').each_with_index do |letter, index|
       if letter == input
         user_guess[index] = input
@@ -69,9 +69,9 @@ class Game
   end
 
   def process_incorrect_guess(input)
-    puts 'No luck!'.colorize(:light_red)
+    puts 'No luck!'.bold.red
     @incorrect_guesses += 1
-    previous_guesses << input.colorize(:light_red)
+    previous_guesses << input.bold.red
   end
 
   def prompt_player
@@ -101,10 +101,10 @@ class Game
 
   def end_game
     if @incorrect_guesses == @lives
-      puts 'Better luck next time!'.colorize(:light_red)
+      puts 'Better luck next time!'.bold.red
       puts "The word was: #{secret_word}"
     else
-      puts 'Congratulations, you guessed the word!'.colorize(:light_green)
+      puts 'Congratulations, you guessed the word!'.bold.green
       p @secret_word
     end
     play_again_prompt
