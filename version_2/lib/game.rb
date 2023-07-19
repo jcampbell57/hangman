@@ -8,6 +8,8 @@ class Game
     prompt_guess
   end
 
+  # game initialization methods
+
   def randomize_key
     dictionary = []
     words = File.readlines('version_2/dictionary.txt')
@@ -17,10 +19,11 @@ class Game
     word_key.size.times { correct_guesses << '_' }
   end
 
+  # game loop methods
+
   def prompt_guess
-    self.guess_count -= 1
-    puts "Incorrect guesses: #{incorrect_guesses}"
-    puts 'Guesses remaining: '
+    puts "Incorrect guesses: #{incorrect_guesses.join(' ')}"
+    puts "Incorrect guesses remaining: #{guess_count}"
     puts "#{correct_guesses.join(' ')}"
     print 'Guess a letter: '
     validate_guess(gets.chomp)
@@ -28,17 +31,33 @@ class Game
   end
 
   def validate_guess(input)
-    return input if input.length == 1 && input.downcase.match?(/[a-z]/)
+    if input.length == 1 && input.downcase.match?(/[a-z]/)
+      process_guess(input)
+    else
+      print 'Input your guess as a single letter: '
+      validate_guess(gets.chomp)
+    end
+  end
 
-    print 'Input your guess as a single letter: '
-    validate_guess(gets.chomp)
+  def process_guess(input)
+    if word_key.any? { |l| l == input }
+      puts 'Good guess!'
+      word_key.each_with_index do |letter, index|
+        letter == input ? correct_guesses[index] = letter : next
+      end
+      end_game if word_key == correct_guesses
+    else
+      puts 'No luck!'
+      (guess_count - 1).zero? ? end_game : self.guess_count -= 1
+      incorrect_guesses << input
+    end
   end
 
   # end game methods
 
   def end_game
     if word_key == correct_guesses
-      puts "You win with #{7 - guess_count} guesses remaining! Great job!"
+      puts "You win with #{7 - guess_count} incorrect guesses! Great job!"
     elsif word_key != correct_guesses && guess_count.zero?
       puts 'You ran out of guesses!'
       puts "The word was: #{word_key.join}"
