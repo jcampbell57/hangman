@@ -1,10 +1,14 @@
+# frozen_string_literal: true
+
+# hangman console game game logic
 class Game
   attr_accessor :word_key, :correct_guesses, :incorrect_guesses, :guess_count
 
-  def initialize
-    self.incorrect_guesses = []
-    self.guess_count = 7
-    randomize_key
+  def initialize(incorrect_guesses = [], guess_count = 7, correct_guesses = [], word_key = nil)
+    self.incorrect_guesses = incorrect_guesses
+    self.guess_count = guess_count
+    self.correct_guesses = correct_guesses
+    self.word_key = word_key.nil? ? randomize_key : word_key
     prompt_guess
   end
 
@@ -15,8 +19,8 @@ class Game
     words = File.readlines('version_2/dictionary.txt')
     words.each { |word| dictionary << word.chomp if word.length.between?(5, 12) }
     self.word_key = dictionary.sample.split('')
-    self.correct_guesses = []
     word_key.size.times { correct_guesses << '_' }
+    word_key
   end
 
   # game loop methods
