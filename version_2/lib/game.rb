@@ -32,7 +32,12 @@ class Game
 
   def validate_guess(input)
     if input.length == 1 && input.downcase.match?(/[a-z]/)
-      process_guess(input)
+      if incorrect_guesses.any? { |l| l == input } || correct_guesses.any? { |l| l == input }
+        print 'You have already guessed that letter, guess again: '
+        validate_guess(gets.chomp)
+      else
+        process_guess(input)
+      end
     else
       print 'Input your guess as a single letter: '
       validate_guess(gets.chomp)
@@ -48,7 +53,7 @@ class Game
       end_game if word_key == correct_guesses
     else
       puts 'No luck!'
-      (guess_count - 1).zero? ? end_game : self.guess_count -= 1
+      end_game if (self.guess_count -= 1).zero?
       incorrect_guesses << input
     end
   end
@@ -57,7 +62,8 @@ class Game
 
   def end_game
     if word_key == correct_guesses
-      puts "You win with #{7 - guess_count} incorrect guesses! Great job!"
+      # puts "You win with #{guess_count} guesses remaining! Great job!"
+      puts "You won after #{7 - guess_count} incorrect guesses!"
     elsif word_key != correct_guesses && guess_count.zero?
       puts 'You ran out of guesses!'
       puts "The word was: #{word_key.join}"
