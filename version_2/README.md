@@ -8,3 +8,5 @@ This project will allow me to:
 The biggest challenge of this project was implementing the save feature.
 
 Revisiting this project with version 2 to reinforce serialization, save feature
+
+overall, I think v2 code came out mostly better, but v1 color feature is cool.
