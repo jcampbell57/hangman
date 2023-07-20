@@ -52,10 +52,9 @@ class Game
 
   def save_game
     Dir.mkdir('saves') unless Dir.exist?('saves')
-    save_array = [incorrect_guesses, guess_count, correct_guesses, word_key]
     timestamp = Time.new.to_s[0..18]
     filename = "saves/#{timestamp}.yaml"
-    File.open(filename, 'w') { |f| YAML.dump([] << save_array, f) }
+    File.open(filename, 'w') { |f| YAML.dump([] << self, f) }
     puts 'Your game has been saved.'
     exit
   end
@@ -80,7 +79,10 @@ class Game
   end
 
   def process_game_choice(input, saved_games)
-    yaml = YAML.load_file(saved_games[input])
+    yaml = YAML.safe_load(
+      File.read(saved_games[input]),
+      permitted_classes: [Game]
+    )
     self.incorrect_guesses = yaml[0][0]
     self.guess_count = yaml[0][1]
     self.correct_guesses = yaml[0][2]
