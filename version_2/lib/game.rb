@@ -2,6 +2,8 @@
 
 # hangman console game game logic
 class Game
+  require 'yaml'
+
   attr_accessor :word_key, :correct_guesses, :incorrect_guesses, :guess_count
 
   def initialize(incorrect_guesses = [], guess_count = 7, correct_guesses = [], word_key = nil)
@@ -16,11 +18,31 @@ class Game
 
   def randomize_key
     dictionary = []
-    words = File.readlines('version_2/dictionary.txt')
+    words = File.readlines('dictionary.txt')
     words.each { |word| dictionary << word.chomp if word.length.between?(5, 12) }
     self.word_key = dictionary.sample.split('')
     word_key.size.times { correct_guesses << '_' }
     word_key
+  end
+
+  # game save methods
+
+  def save_game
+    Dir.mkdir('saves') unless Dir.exist?('saves')
+    save_array = [incorrect_guesses, guess_count, correct_guesses, word_key]
+    save_info = YAML.dump(save_array)
+    timestamp = Time.new.to_s[0..18]
+    filename = "saves/#{timestamp}.yaml"
+    File.open(filename, 'w') do |file|
+      file.puts save_info
+    end
+    puts 'Your game has been saved.'
+    exit
+  end
+
+  def load_game
+    # p YAML.safe_load(save_info)
+    # Game.new(YAML.safe_load(YAML.dump(to_s)))
   end
 
   # game loop methods
@@ -29,7 +51,7 @@ class Game
     puts "Incorrect guesses: #{incorrect_guesses.join(' ')}"
     puts "Incorrect guesses remaining: #{guess_count}"
     puts "#{correct_guesses.join(' ')}"
-    print 'Guess a letter: '
+    print "Guess a letter or type 'save' to save: "
     validate_guess(gets.chomp)
     prompt_guess
   end
@@ -42,6 +64,8 @@ class Game
       else
         process_guess(input)
       end
+    elsif input.downcase == 'save'
+      save_game
     else
       print 'Input your guess as a single letter: '
       validate_guess(gets.chomp)
