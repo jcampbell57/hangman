@@ -12,15 +12,6 @@ Project description can be found [here](https://www.theodinproject.com/lessons/r
 Live demo available [on Replit (account required)](https://replit.com/@jcampbell57/Hangman)
 
 
-## Table of Contents
-
-* [Technologies utilized](#technologies-utilized)
-* [Learning outcomes](#learning-outcomes)
-* [Project screenshot](#project-screenshot)
-* [Behind the Scenes](#behind-the-scenes)
-* [Installation](#installation)
-
-
 ## Technologies utilized
 
 - Ruby
@@ -39,14 +30,6 @@ This project helped to reinforce the following skills:
 ## Project screenshot
 
 ![Hangman](assets/hangman-600w.png)
-
-
-## Behind the scenes
-
-### Todo
-
-- add color feature to v2.
-- remove v1
 
 
 ## Installation
