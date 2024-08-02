@@ -52,7 +52,7 @@ class Game
 
   def save_game
     Dir.mkdir('saves') unless Dir.exist?('saves')
-    timestamp = Time.new.to_s[0..18]
+    timestamp = Time.now.strftime("%Y-%m-%d %H:%M:%S")
     filename = "saves/#{timestamp}.yaml"
     File.open(filename, 'w') { |f| YAML.dump([] << self, f) }
     puts 'Your game has been saved.'
