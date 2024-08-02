@@ -2,7 +2,7 @@
 
 ## Project info
 
-The command line Hangman game. The purpose of this project was to practice implementation of serialization with the save game feature.
+A command line Hangman game. The purpose of this project was to practice implementation of serialization with the save game feature.
 
 Project description can be found [here](https://www.theodinproject.com/lessons/ruby-hangman).
 
