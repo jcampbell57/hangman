@@ -31,7 +31,7 @@ class Game
 
   def start_game
     puts 'Lets play Hangman in the console!'
-    if Dir.exist?('saves')
+    if Dir.exist?('saves') && !Dir.empty?('saves')
       puts '- [1] for new game'
       puts '- [2] to load game'
       print 'New game or saved game: '
