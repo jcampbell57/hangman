@@ -6,14 +6,14 @@ require_relative 'colors'
 class Game
   require 'yaml'
 
-  attr_accessor :word_key, :correct_guesses, :incorrect_guesses, :guess_count
+  attr_accessor :word_key, :player_guess, :previous_guesses, :guess_count
 
   DEFAULT_GUESSES = 6
 
   def initialize
-    self.incorrect_guesses = []
+    self.previous_guesses = []
     self.guess_count = DEFAULT_GUESSES
-    self.correct_guesses = []
+    self.player_guess = []
     self.word_key = randomize_key
     start_game
   end
@@ -25,7 +25,7 @@ class Game
     words = File.readlines('dictionary.txt')
     words.each { |word| dictionary << word.chomp if word.length.between?(5, 12) }
     self.word_key = dictionary.sample.split('')
-    word_key.size.times { correct_guesses << '_' }
+    word_key.size.times { player_guess << '_' }
     word_key
   end
 
@@ -85,9 +85,9 @@ class Game
       File.read(saved_games[input]),
       permitted_classes: [Game]
     )
-    self.incorrect_guesses = yaml[0].incorrect_guesses
+    self.previous_guesses = yaml[0].previous_guesses
     self.guess_count = yaml[0].guess_count
-    self.correct_guesses = yaml[0].correct_guesses
+    self.player_guess = yaml[0].player_guess
     self.word_key = yaml[0].word_key
     File.delete(saved_games[input])
     prompt_guess
@@ -97,10 +97,10 @@ class Game
 
   def prompt_guess
     if guess_count < DEFAULT_GUESSES
-      puts "Incorrect guesses: #{incorrect_guesses.join(' ')}"
+      puts "Previous guesses: #{previous_guesses.join(' ')}"
       puts "Incorrect guesses remaining: #{guess_count}"
     end
-    puts "#{correct_guesses.join(' ')}"
+    puts "#{player_guess.join(' ')}"
     print "Guess a letter or type 'save' to save: "
     validate_guess(gets.chomp)
     prompt_guess
@@ -108,7 +108,7 @@ class Game
 
   def validate_guess(input)
     if input.length == 1 && input.downcase.match?(/[a-z]/)
-      if incorrect_guesses.any? { |l| l == input.bold.red } || correct_guesses.any? { |l| l == input }
+      if previous_guesses.any? { |l| l == input.bold.red || l == input.bold.green }
         puts 'You have already guessed that letter!'.bold.brown
         print "Guess a letter or type 'save' to save: "
         validate_guess(gets.chomp)
@@ -127,24 +127,25 @@ class Game
   def process_guess(input)
     if word_key.any? { |l| l == input }
       puts 'Good guess!'.bold.green
+      previous_guesses << input.bold.green
       word_key.each_with_index do |letter, index|
-        letter == input ? correct_guesses[index] = letter : next
+        letter == input ? player_guess[index] = letter : next
       end
-      end_game if word_key == correct_guesses
+      end_game if word_key == player_guess
     else
       puts 'No luck!'.bold.red
       end_game if (self.guess_count -= 1).zero?
-      incorrect_guesses << input.bold.red
+      previous_guesses << input.bold.red
     end
   end
 
   # end game methods
 
   def end_game
-    if word_key == correct_guesses
+    if word_key == player_guess
       puts 'Congratulations, you guessed the word!'.bold.green
       p word_key.join
-    elsif word_key != correct_guesses && guess_count.zero?
+    elsif word_key != player_guess && guess_count.zero?
       puts 'You ran out of guesses!'.bold.red
       puts "The word was: #{word_key.join}"
     else
