@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'colors'
+
 # hangman console game logic
 class Game
   require 'yaml'
@@ -73,7 +75,7 @@ class Game
     if input.split('').all? { |character| character.match(/[0-9]/) } && saved_games[input.to_i - 1].nil? == false
       process_game_choice(input.to_i - 1, saved_games)
     else
-      print 'Game does not exist, choose again: '
+      print 'Game does not exist, choose again: '.bold.brown
       validate_game_choice(gets.chomp, saved_games)
     end
   end
@@ -83,10 +85,10 @@ class Game
       File.read(saved_games[input]),
       permitted_classes: [Game]
     )
-    self.incorrect_guesses = yaml[0][0]
-    self.guess_count = yaml[0][1]
-    self.correct_guesses = yaml[0][2]
-    self.word_key = yaml[0][3]
+    self.incorrect_guesses = yaml[0].incorrect_guesses
+    self.guess_count = yaml[0].guess_count
+    self.correct_guesses = yaml[0].correct_guesses
+    self.word_key = yaml[0].word_key
     File.delete(saved_games[input])
     prompt_guess
   end
@@ -106,8 +108,9 @@ class Game
 
   def validate_guess(input)
     if input.length == 1 && input.downcase.match?(/[a-z]/)
-      if incorrect_guesses.any? { |l| l == input } || correct_guesses.any? { |l| l == input }
-        print 'You have already guessed that letter, guess again: '
+      if incorrect_guesses.any? { |l| l == input.bold.red } || correct_guesses.any? { |l| l == input }
+        puts 'You have already guessed that letter!'.bold.brown
+        print "Guess a letter or type 'save' to save: "
         validate_guess(gets.chomp)
       else
         process_guess(input)
@@ -115,22 +118,23 @@ class Game
     elsif input.downcase == 'save'
       save_game
     else
-      print 'Input your guess as a single letter: '
+      puts 'Invalid input! Input your guess as a single letter.'.bold.brown
+      print "Guess a letter or type 'save' to save: "
       validate_guess(gets.chomp)
     end
   end
 
   def process_guess(input)
     if word_key.any? { |l| l == input }
-      puts 'Good guess!'
+      puts 'Good guess!'.bold.green
       word_key.each_with_index do |letter, index|
         letter == input ? correct_guesses[index] = letter : next
       end
       end_game if word_key == correct_guesses
     else
-      puts 'No luck!'
+      puts 'No luck!'.bold.red
       end_game if (self.guess_count -= 1).zero?
-      incorrect_guesses << input
+      incorrect_guesses << input.bold.red
     end
   end
 
@@ -138,10 +142,10 @@ class Game
 
   def end_game
     if word_key == correct_guesses
-      puts "You win with #{guess_count} guesses remaining!"
-      # puts "You won after #{DEFAULT_GUESSES - guess_count} incorrect guesses!"
+      puts 'Congratulations, you guessed the word!'.bold.green
+      p word_key.join
     elsif word_key != correct_guesses && guess_count.zero?
-      puts 'You ran out of guesses!'
+      puts 'You ran out of guesses!'.bold.red
       puts "The word was: #{word_key.join}"
     else
       puts "I'm not sure how you lost!"
